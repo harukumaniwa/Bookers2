@@ -4,13 +4,15 @@ class BooksController < ApplicationController
     @lists = Book.all
     @user = current_user
     @book = Book.new
+    # binding.pry
   end
 
   def create
     @book = Book.new(book_params)
-    @book.postid = current_user.id
+    @book.user_id = current_user.id
+    # binding.pry
     if @book.save
-      # flash[:succsess] = "You have created book successfully."
+      flash[:succsess] = "You have created book successfully."
       redirect_to book_path(@book.id)
     else
       @new = Book.new
@@ -23,7 +25,7 @@ class BooksController < ApplicationController
   def show
     @book = Book.find(params[:id])
     @new = Book.new
-    @user = User.find(@book.postid)
+    @user = User.find(@book.user_id)
   end
 
   def destroy
@@ -34,13 +36,21 @@ class BooksController < ApplicationController
 
   def edit
     @book = Book.find(params[:id])
+    if @book.user_id == current_user.id
+    else
+      redirect_to books_path
+    end
   end
 
 
   def update
-    book = Book.find(params[:id])
-    book.update(book_params)
-    redirect_to book_path(book.id)
+    @book = Book.find(params[:id])
+    if @book.update(book_params)
+      flash[:post_update] = "You have updated book successfully."
+      redirect_to book_path(@book.id)
+    else
+      render "edit"
+    end
   end
 
   private

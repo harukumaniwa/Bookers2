@@ -7,5 +7,5 @@ Rails.application.routes.draw do
   post 'books/:id', to: 'books#create'
   post 'users', to: 'books#create'
   post 'users/:id', to: 'books#create'
-
+  patch 'users/:id/edit', to: 'users#update'
 end
